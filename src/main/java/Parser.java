@@ -3,51 +3,84 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.sql.SQLException;
+import java.io.*;
 import java.util.*;
-import java.io.FileReader;
 
 public class Parser {
     private static final String filePath = "src/main/resources/sample.json";
+    // объекты до удаления
     private static List<Person> people;
+    // объкты после удаления
     private static List<Person> peopleNew;
-    private static int avirage, sum = 0, count = 0;;
+    private static int avirage;
+
+    static final String DB_URL = "jdbc:postgresql://localhost:5432/postgres";
+    static final String USER = "postgres";
+    static final String PASS = "admin";
+
 
 
     public static void main(String[] args) {
 
-        /*if (args[0].equals("display")) {
+
+        Parser parser = new Parser();
+        parser.desieialaze();
+
+        // количество исходных объектов
+        System.out.println(people.size());
+
+        parser.delete();
+
+        // количество объектов после удаления
+        System.out.println(peopleNew.size());
+
+        parser.avg();
+
+        ConnetcionDB connetcion = new ConnetcionDB();
+        connetcion.connection();
+
+        for (Person pi : peopleNew) {
+
+            if (pi.salary > avirage) {
+                connetcion.queryInsert(pi.name, pi.age, pi.salary);
+            }
+        }
+
+        if (args[0].equals("display")) {
             // распечатать общее количество записей в таблице бд
             // и записи значение полей age которых больше 25 и записать их в файл отчета.
-        }*/
+            connetcion.querySelect();
+        }
+
+    }
 
 
-        ConnetcionDB c = new ConnetcionDB();
-        c.connection();
+    public void delete() {
+        // удаление объектов
+        Iterator it = people.iterator();
+        while(it.hasNext())
+        {
+            Person person = (Person) it.next();
+            if(!peopleNew.contains(person))
+            {
+                peopleNew.add(person);
+            }
 
-        // создание таблицы Person
-        String query = "CREATE TABLE Person " +
-                "(Id SERIAL PRIMARY KEY,\n" +
-                "    Name CHARACTER VARYING(30),\n" +
-                "    Age INTEGER,\n"+
-                "Salary INTEGER)";
-
-        String addEntryQuery = "INSERT INTO Person (Name, Age, Salary)" +
-                "VALUES ('Vasy', 25, 200000)";
-
-        // удаление таблицы
-        String queryDROP = "DROP TABLE Person";
-
-        try {
-            c.executeUpdate(query);
-            c.executeUpdate(addEntryQuery);
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
     }
 
+    public void avg() {
+
+        int count = 0;
+        int sum = 0;
+
+        for (Person pi: peopleNew) {
+            sum += pi.salary;
+            count += 1;
+        }
+
+        avirage = sum / count;
+    }
 
     public void desieialaze() {
         try {
@@ -55,8 +88,6 @@ public class Parser {
 
 
             FileReader reader = new FileReader(filePath);
-            String str, str1;
-            int count = 0;
             peopleNew = new ArrayList<Person>();
             people = new ArrayList<Person>();
 
@@ -74,9 +105,6 @@ public class Parser {
 
                 JSONObject object1 = (JSONObject) i1.next();
 
-                sum += Integer.parseInt(object1.get("salary").toString());
-                count += 1;
-
                 people.add(
                         new Person(
                                 object1.get("name").toString(),
@@ -84,38 +112,10 @@ public class Parser {
                                 Integer.parseInt(object1.get("salary").toString()))
                 );
 
-
             }
 
-            System.out.println(people.size());
-
-            int i = 0, j = 0;
-
-            Iterator it = people.iterator();
-            while(it.hasNext())
-            {
-                Person person = (Person) it.next();
-                if(!peopleNew.contains(person))
-                {
-                    peopleNew.add(person);
-                }
-
-            }
-
-            avirage = sum / count;
-
-            for (Person pi : peopleNew) {
-                if (pi.salary > avirage) {
-
-                }
-            }
-
-            System.out.println(peopleNew.size());
-            System.out.println(avirage);
 
 
-        }  catch (FileNotFoundException ex) {
-            ex.printStackTrace();
         } catch (IOException ex) {
             ex.printStackTrace();
         } catch (ParseException ex) {
@@ -124,6 +124,7 @@ public class Parser {
             ex.printStackTrace();
         }
     }
+
 
 
 
