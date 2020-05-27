@@ -29,7 +29,7 @@ public class ConnetcionDB {
     }
 
     public void createTable(String sql) {
-        // String sql = "Create Table Person (id Serial PRIMARY KEY, name CHARACTER VARYING(30), age INTEGER, salary INTEGER)";
+        // String sql = "CREATE TABLE Person (id Serial PRIMARY KEY, name CHARACTER VARYING(30), age INTEGER, salary INTEGER)";
         try {
             Statement statement = connection.createStatement();
             statement.executeUpdate(sql);
@@ -39,7 +39,7 @@ public class ConnetcionDB {
     }
 
     public void dropTable(String sql) {
-        //String sql = "drop TABLE Person";
+        //String sql = "DROP TABLE Person";
         try {
             Statement statement = connection.createStatement();
             statement.executeUpdate(sql);
@@ -49,6 +49,7 @@ public class ConnetcionDB {
 
     }
 
+    // по хорошему надо передовать в метод запрос чтобы получался CRUD
     public void queryInsert(String name, int age, int salary) {
 
         try {
@@ -73,7 +74,7 @@ public class ConnetcionDB {
     public void querySelect() {
 
         try {
-            String sql = "Select *, (select count(id) from person) as Count " +
+            String sql = "SELECT *, (SELECT count(id) FROM person) as Count " +
                             " FROM Person" +
                             " WHERE Age > 25";
 

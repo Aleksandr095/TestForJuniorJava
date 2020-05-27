@@ -37,9 +37,15 @@ public class Parser {
         Parser.peopleNew = peopleNew;
     }
 
+    public int sizePeople() {
+        return people.size();
+    }
+
+    public int sizePeopleNew() {
+        return peopleNew.size();
+    }
 
     public void insertDB(ConnetcionDB database, int avirage) {
-        // database.connection();
 
         for (Person pi : peopleNew) {
 
@@ -50,9 +56,9 @@ public class Parser {
     }
 
     public void display(ConnetcionDB database, String str) {
-        // database.connection();
+
         try {
-            if (str == "display") {
+            if (str == "display") { // узнал что такое пул строк =)
                 // распечатать общее количество записей в таблице бд
                 // и записи значение полей age которых больше 25 и записать их в файл отчета.
                 database.querySelect();
@@ -91,11 +97,9 @@ public class Parser {
 
     public void deserialize() {
         try {
+
             // считывание файла JSON
-
-
             FileReader reader = new FileReader(filePath);
-
 
             Object jsonParser = new JSONParser().parse(reader);
             JSONArray array = (JSONArray) jsonParser;
@@ -115,8 +119,6 @@ public class Parser {
 
             }
 
-
-
         } catch (IOException ex) {
             ex.printStackTrace();
         } catch (ParseException ex) {
@@ -125,8 +127,5 @@ public class Parser {
             ex.printStackTrace();
         }
     }
-
-
-
 
 }

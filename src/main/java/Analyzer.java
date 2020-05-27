@@ -33,20 +33,15 @@ public class Analyzer {
 
                     parser.deserialize();
                     // количество исходных объектов
-                    System.out.println(parser.getPeople().size());
+                    System.out.println(parser.getPeople());
                     parser.delete();
 
                     // количество объектов после удаления
-                    //System.out.println(parser.getPeopleNew().size());
+                    // System.out.println(parser.getPeopleNew());
 
                     parser.insertDB(database, parser.avg());
+                    parser.display(database, args[0]);
 
-                    try {
-                        parser.display(database, "display");
-                    }
-                    catch (ArrayIndexOutOfBoundsException e) {
-                        System.out.println("Аргументы командной строки не заданы");
-                    }
 
                 } else {
                     // логирование
