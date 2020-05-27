@@ -7,53 +7,60 @@ import java.io.*;
 import java.util.*;
 
 public class Parser {
+
     private static final String filePath = "src/main/resources/sample.json";
+
     // объекты до удаления
     private static List<Person> people;
+
     // объкты после удаления
     private static List<Person> peopleNew;
-    private static int avirage;
 
-    static final String DB_URL = "jdbc:postgresql://localhost:5432/postgres";
-    static final String USER = "postgres";
-    static final String PASS = "admin";
+    public Parser() {
+        peopleNew = new ArrayList<Person>();
+        people = new ArrayList<Person>();
+    }
+
+    public List<Person> getPeople() {
+        return people;
+    }
+
+    public void setPeople(List<Person> people) {
+        Parser.people = people;
+    }
+
+    public List<Person> getPeopleNew() {
+        return peopleNew;
+    }
+
+    public void setPeopleNew(List<Person> peopleNew) {
+        Parser.peopleNew = peopleNew;
+    }
 
 
-
-    public static void main(String[] args) {
-
-
-        Parser parser = new Parser();
-        parser.desieialaze();
-
-        // количество исходных объектов
-        System.out.println(people.size());
-
-        parser.delete();
-
-        // количество объектов после удаления
-        System.out.println(peopleNew.size());
-
-        parser.avg();
-
-        ConnetcionDB connetcion = new ConnetcionDB();
-        connetcion.connection();
+    public void insertDB(ConnetcionDB database, int avirage) {
+        // database.connection();
 
         for (Person pi : peopleNew) {
 
-            if (pi.salary > avirage) {
-                connetcion.queryInsert(pi.name, pi.age, pi.salary);
+            if (pi.getSalary() > avirage) {
+                database.queryInsert(pi.getName(), pi.getAge(), pi.getSalary());
             }
         }
-
-        if (args[0].equals("display")) {
-            // распечатать общее количество записей в таблице бд
-            // и записи значение полей age которых больше 25 и записать их в файл отчета.
-            connetcion.querySelect();
-        }
-
     }
 
+    public void display(ConnetcionDB database, String str) {
+        // database.connection();
+        try {
+            if (str == "display") {
+                // распечатать общее количество записей в таблице бд
+                // и записи значение полей age которых больше 25 и записать их в файл отчета.
+                database.querySelect();
+            }
+        } catch (Exception e) {
+            System.out.println("Не задан аргумент командной строки");
+        }
+    }
 
     public void delete() {
         // удаление объектов
@@ -69,29 +76,25 @@ public class Parser {
         }
     }
 
-    public void avg() {
+    public int avg() {
 
         int count = 0;
         int sum = 0;
 
         for (Person pi: peopleNew) {
-            sum += pi.salary;
+            sum += pi.getAge();
             count += 1;
         }
 
-        avirage = sum / count;
+        return sum / count;
     }
 
-    public void desieialaze() {
+    public void deserialize() {
         try {
             // считывание файла JSON
 
 
             FileReader reader = new FileReader(filePath);
-            peopleNew = new ArrayList<Person>();
-            people = new ArrayList<Person>();
-
-
 
 
             Object jsonParser = new JSONParser().parse(reader);
@@ -99,8 +102,6 @@ public class Parser {
 
 
             Iterator i1 = array.iterator();
-
-
             while (i1.hasNext()) {
 
                 JSONObject object1 = (JSONObject) i1.next();

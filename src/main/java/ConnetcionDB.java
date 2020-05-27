@@ -1,11 +1,9 @@
-
 import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.*;
 
 public class ConnetcionDB {
 
-    //  Database credentials
     static final String DB_URL = "jdbc:postgresql://localhost:5432/postgres";
     static final String USER = "postgres";
     static final String PASS = "admin";
@@ -19,7 +17,6 @@ public class ConnetcionDB {
         connection = null;
         try {
             Class.forName("org.postgresql.Driver");
-
             connection = DriverManager.getConnection(DB_URL, USER, PASS);
 
         } catch (ClassNotFoundException e) {
@@ -31,6 +28,26 @@ public class ConnetcionDB {
 
     }
 
+    public void createTable(String sql) {
+        // String sql = "Create Table Person (id Serial PRIMARY KEY, name CHARACTER VARYING(30), age INTEGER, salary INTEGER)";
+        try {
+            Statement statement = connection.createStatement();
+            statement.executeUpdate(sql);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void dropTable(String sql) {
+        //String sql = "drop TABLE Person";
+        try {
+            Statement statement = connection.createStatement();
+            statement.executeUpdate(sql);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
 
     public void queryInsert(String name, int age, int salary) {
 
@@ -56,9 +73,9 @@ public class ConnetcionDB {
     public void querySelect() {
 
         try {
-            String sql = "Select *, (select count(id) from person) as count " +
-                            "FROM Person " +
-                            "WHERE Age > 25";
+            String sql = "Select *, (select count(id) from person) as Count " +
+                            " FROM Person" +
+                            " WHERE Age > 25";
 
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(sql);
@@ -79,7 +96,6 @@ public class ConnetcionDB {
                     writer.flush();
                 }
                 catch(IOException ex){
-
                     System.out.println(ex.getMessage());
                 }
             }
