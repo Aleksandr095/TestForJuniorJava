@@ -95,8 +95,6 @@ public class Parser {
 
             }
 
-            reader.close();
-
         } catch (IOException ex) {
             ex.printStackTrace();
         } catch (ParseException ex) {
