@@ -8,8 +8,6 @@ import java.util.*;
 
 public class Parser {
 
-    private static final String filePath = "src/main/resources/sample.json";
-
     // объекты до удаления
     private static List<Person> people;
 
@@ -19,22 +17,6 @@ public class Parser {
     public Parser() {
         peopleNew = new ArrayList<Person>();
         people = new ArrayList<Person>();
-    }
-
-    public List<Person> getPeople() {
-        return people;
-    }
-
-    public void setPeople(List<Person> people) {
-        Parser.people = people;
-    }
-
-    public List<Person> getPeopleNew() {
-        return peopleNew;
-    }
-
-    public void setPeopleNew(List<Person> peopleNew) {
-        Parser.peopleNew = peopleNew;
     }
 
     public int sizePeople() {
@@ -56,16 +38,11 @@ public class Parser {
     }
 
     public void display(ConnetcionDB database, String str) {
-
-        try {
-            if (str == "display") { // узнал что такое пул строк =)
+            if (str == "display") {
                 // распечатать общее количество записей в таблице бд
                 // и записи значение полей age которых больше 25 и записать их в файл отчета.
                 database.querySelect();
             }
-        } catch (Exception e) {
-            System.out.println("Не задан аргумент командной строки");
-        }
     }
 
     public void delete() {
@@ -82,7 +59,7 @@ public class Parser {
         }
     }
 
-    public int avg() {
+    public int avg() throws ArithmeticException {
 
         int count = 0;
         int sum = 0;
@@ -95,14 +72,13 @@ public class Parser {
         return sum / count;
     }
 
-    public void deserialize() {
-        try {
+    public void deserialize(FileReader reader) {
+         try {
 
-            // считывание файла JSON
-            FileReader reader = new FileReader(filePath);
 
             Object jsonParser = new JSONParser().parse(reader);
             JSONArray array = (JSONArray) jsonParser;
+
 
 
             Iterator i1 = array.iterator();
@@ -118,6 +94,8 @@ public class Parser {
                 );
 
             }
+
+            reader.close();
 
         } catch (IOException ex) {
             ex.printStackTrace();

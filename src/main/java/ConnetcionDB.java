@@ -90,7 +90,7 @@ public class ConnetcionDB {
                 System.out.println(name + " " + age + " " + salary + " " + count);
 
 
-                try(FileWriter writer = new FileWriter("src/main/resources/Отчет.txt", true))
+                try(FileWriter writer = new FileWriter("src/main/result/Отчет.txt", true))
                 {
                     writer.write(name + " " + age + " " + salary + " " + count);
                     writer.append("\n");
